@@ -4,6 +4,7 @@ import cors from 'cors'
 
 import { UserRouter } from './router/user.router'
 import { ConfigServer } from './config/config'
+import { DataSource } from 'typeorm'
 
 class ServerBoostrap extends ConfigServer {
   public app: express.Application = express()
@@ -13,6 +14,9 @@ class ServerBoostrap extends ConfigServer {
     super()
     this.app.use(express.json())
     this.app.use(express.urlencoded({ extended: true }))
+
+    this.dbConnect()
+
     this.app.use(morgan('dev'))
     this.app.use(cors())
 
@@ -23,6 +27,10 @@ class ServerBoostrap extends ConfigServer {
 
   routers (): Array<express.Router> {
     return [new UserRouter().router]
+  }
+
+  async dbConnect (): Promise<DataSource> {
+    return await new DataSource(this.typeORMConfig).initialize()
   }
 
   public listen () {
