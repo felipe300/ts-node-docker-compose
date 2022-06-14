@@ -1,0 +1,19 @@
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
+import { CategoryEntity } from '../../categories/entity/category.entity'
+import { BaseEntity } from '../../config/base.entity'
+
+@Entity({ name: 'products' })
+export class ProductEntity extends BaseEntity {
+  @Column()
+    productName!: string
+
+  @Column()
+    description!: string
+
+  @Column()
+    price!: number
+
+  @ManyToOne(() => CategoryEntity, (category) => category.products)
+  @JoinColumn({ name: 'category_id' })
+    category!: CategoryEntity
+}
