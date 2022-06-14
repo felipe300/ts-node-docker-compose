@@ -1,7 +1,6 @@
 import * as dotenv from 'dotenv'
-import { DataSourceOptions } from 'typeorm'
-import { SnakeNamingStrategy } from 'typeorm-naming-strategies'
-import * as path from 'path'
+import { DataSource } from 'typeorm'
+import { AppDataSource } from './data.source'
 
 export abstract class ConfigServer {
   constructor () {
@@ -16,7 +15,7 @@ export abstract class ConfigServer {
   }
 
   public getNumberEnvironment (key: string) : number {
-    return Number(process.env[key])
+    return Number(this.getEnvironment(key))
   }
 
   public get nodeEnvironment (): string {
@@ -25,6 +24,7 @@ export abstract class ConfigServer {
 
   public createPathEnvironment (path: string): string {
     const arrEnvironment: Array<string> = ['env']
+
     if (path.length > 0) {
       const strToArr = path.split('.')
       arrEnvironment.unshift(...strToArr)
@@ -33,19 +33,7 @@ export abstract class ConfigServer {
     return `.${arrEnvironment.join('.')}`
   }
 
-  public get typeORMConfig (): DataSourceOptions {
-    return {
-      type: 'mysql',
-      host: this.getEnvironment('DB_HOST'),
-      port: this.getNumberEnvironment('DB_PORT'),
-      username: this.getEnvironment('DB_USER'),
-      password: this.getEnvironment('DB_PASSWORD'),
-      database: this.getEnvironment('DB_DATABASE'),
-      entities: [path.resolve(__dirname, '../**/*.entity{.ts,.js}')],
-      migrations: [path.resolve(__dirname, '../../migrations/*{.ts,.js}')],
-      synchronize: true,
-      logging: false,
-      namingStrategy: new SnakeNamingStrategy()
-    }
+  get initConnect (): Promise<DataSource> {
+    return AppDataSource.initialize()
   }
 }

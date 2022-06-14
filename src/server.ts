@@ -14,7 +14,6 @@ class ServerBoostrap extends ConfigServer {
     super()
     this.app.use(express.json())
     this.app.use(express.urlencoded({ extended: true }))
-
     this.dbConnect()
 
     this.app.use(morgan('dev'))
@@ -29,8 +28,13 @@ class ServerBoostrap extends ConfigServer {
     return [new UserRouter().router]
   }
 
-  async dbConnect (): Promise<DataSource> {
-    return await new DataSource(this.typeORMConfig).initialize()
+  async dbConnect ():Promise<DataSource | void> {
+    return this.initConnect
+      .then(() => {
+        console.log('Connected to database')
+      }).catch((e) => {
+        console.error(e)
+      })
   }
 
   public listen () {
