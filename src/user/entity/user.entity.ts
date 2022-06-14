@@ -22,9 +22,6 @@ export class UserEntity extends BaseEntity {
   @Column()
     province!: string
 
-  @Column()
-    numberPhone!: number
-
   @OneToOne(() => CustomerEntity, (customer) => customer.user)
     customer!: CustomerEntity
 }
