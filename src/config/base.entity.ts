@@ -1,8 +1,8 @@
-import { CreateDateColumn, PrimaryGeneratedColumn } from 'typeorm'
+import { CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 
 export abstract class BaseEntity {
   @PrimaryGeneratedColumn('uuid')
-    id!: String
+    id!: string
 
   @CreateDateColumn({
     name: 'created_at',
@@ -10,7 +10,7 @@ export abstract class BaseEntity {
   })
     createdAt!: Date
 
-  @CreateDateColumn({
+  @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamp'
   })
